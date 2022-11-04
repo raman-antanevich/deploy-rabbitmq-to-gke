@@ -117,3 +117,9 @@ helm upgrade rabbitmq-cluster ./charts/rabbitmq-cluster \
 		--namespace default \
 		--create-namespace
 ```
+
+
+## Resources
+
+- [Using RabbitMQ Cluster Kubernetes Operator](https://www.rabbitmq.com/kubernetes/operator/using-operator.html)
+- [Using RabbitMQ Messaging Topology Kubernetes Operator](https://www.rabbitmq.com/kubernetes/operator/using-topology-operator.html)
