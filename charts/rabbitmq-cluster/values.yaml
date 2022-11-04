@@ -1,0 +1,39 @@
+image:
+  repository: bitnami/rabbitmq
+  tag: 3.11.2
+
+replicaCount: 1
+
+resources:
+  limits:
+    cpu: 2000m
+    memory: 2Gi
+  requests:
+    cpu: 2000m
+    memory: 2Gi
+
+# standard     - HDD
+# standard-rwo - Balanced
+# premium-rwo  - SSD
+volume:
+  size: 10Gi
+  className: standard
+
+service:
+  type: LoadBalancer
+  annotations:
+    networking.gke.io/load-balancer-type: Internal
+    networking.gke.io/internal-load-balancer-allow-global-access: "true"
+
+users:
+- name: guest
+  password: guest
+  tag: administrator
+  vhosh: "/"
+  configure: ""
+  write: ".*"
+  read: ".*"
+
+affinity: {}
+
+tolerations: []

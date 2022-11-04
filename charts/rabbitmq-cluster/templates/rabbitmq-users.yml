@@ -1,0 +1,42 @@
+{{- range .Values.users }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .name }}-rabbitmq-user
+  namespace: {{ $.Release.Namespace }}
+type: kubernetes.io/basic-auth
+data:
+  username: {{ .name | b64enc | quote }}
+  password: {{ .password | b64enc | quote }}
+
+---
+apiVersion: rabbitmq.com/v1beta1
+kind: User
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Release.Namespace }}
+spec:
+  tags: {{ list (.tag | quote) | default list }}
+  rabbitmqClusterReference:
+    name: {{ $.Release.Name }}
+  importCredentialsSecret:
+    name: {{ .name }}-rabbitmq-user
+
+---
+apiVersion: rabbitmq.com/v1beta1
+kind: Permission
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Release.Namespace }}
+spec:
+  vhost: {{ .vhost | quote }}
+  permissions:
+    write: {{ .write | quote }}
+    configure: {{ .configure | quote }}
+    read: {{ .read | quote }}
+  userReference:
+    name: {{ .name }}
+  rabbitmqClusterReference:
+    name: {{ $.Release.Name }}
+{{- end }}

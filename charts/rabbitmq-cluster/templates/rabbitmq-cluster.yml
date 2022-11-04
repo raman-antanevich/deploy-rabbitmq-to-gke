@@ -1,0 +1,28 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    rabbitmq.com/topology-allowed-namespaces: "*"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  image: {{ printf "%s:%s" .Values.image.repository .Values.image.tag }}
+  service:
+    type: {{ .Values.service.type }}
+    {{- with .Values.service.annotations }}
+    annotations:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+  persistence:
+    storage: {{ .Values.volume.size }}
+    storageClassName: {{ .Values.volume.className }}
+  {{- with .Values.resources }}
+  resources: {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.affinity }}
+  affinity: {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.tolerations }}
+  tolerations: {{- toYaml . | nindent 4 }}
+  {{- end }}
